@@ -1,0 +1,30 @@
+version: '3'
+services:
+  nodejs-server:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "4100:4100"
+    depends_on:
+      - "db"     
+    environment:
+      - DATABASE_URL = "Sqlserver://sa:${PASS}@db:1433/sofyweb?encrypt=true"    
+    volumes:
+      - backend_data:/app/api
+  angular-web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "4200:4200"
+  db:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      - ACCEPT_EULA = "${ELA}"
+      - MSSQL_SA_PASSWORD = "${PASS}"
+      - MSSQL_PID = "${PID}"
+volumes:
+  backend_data:
+
+
